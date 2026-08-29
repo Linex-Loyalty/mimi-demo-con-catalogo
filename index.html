@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Meridian Insurance — Policy Dashboard</title>
+<meta name="robots" content="noindex, nofollow" />
+<style>
+  :root {
+    --meridian-bg: #eef1f6;
+    --meridian-surface: #ffffff;
+    --meridian-text: #1a2233;
+    --meridian-text-muted: #5b6478;
+    --meridian-primary: #2a4d8f;
+    --meridian-border: #dbe1ec;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--meridian-bg);
+    color: var(--meridian-text);
+  }
+
+  header {
+    background: var(--meridian-primary);
+    color: #fff;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  header .brand { font-weight: 700; font-size: 20px; }
+
+  main {
+    max-width: 960px;
+    margin: 32px auto;
+    padding: 0 24px;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  section {
+    background: var(--meridian-surface);
+    border: 1px solid var(--meridian-border);
+    border-radius: 10px;
+    padding: 24px;
+  }
+
+  section h2 {
+    margin: 0 0 12px;
+    font-size: 15px;
+    color: var(--meridian-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .policy-card .value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--meridian-primary);
+  }
+
+  footer {
+    max-width: 960px;
+    margin: 0 auto 40px;
+    padding: 0 24px;
+    color: var(--meridian-text-muted);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="brand">Meridian Insurance</div>
+    <div>Policyholder: J. Alvarez</div>
+  </header>
+
+  <main>
+    <section class="policy-card" aria-label="Policy summary">
+      <h2>Policy summary</h2>
+      <div class="value">Auto — Full coverage</div>
+      <p>Next payment: $142.00 on Sep 14, 2026</p>
+    </section>
+
+    <section aria-label="Open claims">
+      <h2>Open claims</h2>
+      <p>No open claims.</p>
+    </section>
+  </main>
+
+  <footer>
+    Demo page — this app hands the chat a hand-written catalog of its own colors, the same way
+    a fully integrated app (like mint) does. Any change it makes is applied by this page's own
+    code, not by mimi guessing the page's structure.
+  </footer>
+
+  <script type="module" src="https://linex-ai-chat.eph.smartlinks-np.dev/lx-chat.js"></script>
+  <lx-chat
+    id="chat"
+    backend-url="https://agents-gateway-145860740642.us-east4.run.app/agui/chat"
+    app-id="mimi-demo-con-catalogo"
+    email="demo@meridian-insurance.example"
+    agent="mimi"
+  ></lx-chat>
+
+  <script type="module">
+    const chat = document.getElementById('chat');
+
+    // El catálogo a mano: la MISMA forma que arma mint (capabilities.tokens/classes + varKeys/
+    // componentProps) — ver mimi/src/domain/theming.ts::leerCatalogo del lado que lo lee.
+    const CATALOG = {
+      appId: 'mimi-demo-con-catalogo',
+      version: '1.0.0',
+      capabilities: {
+        tokens: [
+          { key: '--meridian-bg', type: 'color', kind: 'surface', label: 'Page background' },
+          { key: '--meridian-surface', type: 'color', kind: 'surface', label: 'Card background' },
+          { key: '--meridian-text', type: 'color', kind: 'onSurface', label: 'Text' },
+          { key: '--meridian-text-muted', type: 'color', kind: 'onSurface', label: 'Muted text' },
+          { key: '--meridian-primary', type: 'color', kind: 'accent', label: 'Brand color' },
+          { key: '--meridian-border', type: 'color', kind: 'border', label: 'Border' },
+        ],
+        classes: [
+          { key: 'policy-card', label: 'Policy summary card', aliases: ['policy card', 'summary'], props: ['bg', 'color'] },
+        ],
+        scopes: [],
+      },
+      varKeys: ['--meridian-bg', '--meridian-surface', '--meridian-text', '--meridian-text-muted', '--meridian-primary', '--meridian-border'],
+      componentProps: ['bg', 'color'],
+    };
+
+    chat.getContext = () => ({ theming: { catalog: CATALOG, current: null, brand: null } });
+
+    // Aplica lo que mimi propuso, directo sobre las variables/clase de ESTA página — el mismo
+    // trabajo que hace ChatMount.tsx de mint, en miniatura.
+    chat.executeAction = async ({ name, args }) => {
+      const theme = (args && args.theme) || {};
+      if (name === 'save_theme') {
+        for (const [key, value] of Object.entries(theme.vars || {})) {
+          if (value != null) document.documentElement.style.setProperty(key, value);
+        }
+        for (const [cls, props] of Object.entries(theme.components || {})) {
+          document.querySelectorAll(`.${cls}`).forEach((el) => {
+            if (props.bg) el.style.backgroundColor = props.bg;
+            if (props.color) el.style.color = props.color;
+          });
+        }
+        return { ok: true, message: 'Applied.' };
+      }
+      if (name === 'reset_theme') {
+        document.documentElement.removeAttribute('style');
+        document.querySelectorAll('.policy-card').forEach((el) => el.removeAttribute('style'));
+        return { ok: true, message: 'Reset.' };
+      }
+      return { ok: false, message: 'Unsupported action.' };
+    };
+  </script>
+</body>
+</html>
