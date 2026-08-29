@@ -118,12 +118,12 @@
       version: '1.0.0',
       capabilities: {
         tokens: [
-          { key: '--meridian-bg', type: 'color', kind: 'surface', label: 'Page background' },
-          { key: '--meridian-surface', type: 'color', kind: 'surface', label: 'Card background' },
-          { key: '--meridian-text', type: 'color', kind: 'onSurface', label: 'Text' },
-          { key: '--meridian-text-muted', type: 'color', kind: 'onSurface', label: 'Muted text' },
-          { key: '--meridian-primary', type: 'color', kind: 'accent', label: 'Brand color' },
-          { key: '--meridian-border', type: 'color', kind: 'border', label: 'Border' },
+          { key: '--meridian-bg', type: 'color', kind: 'surface', label: 'Page background', group: 'surface', aliases: ['background', 'bg', 'fondo', 'canvas'] },
+          { key: '--meridian-surface', type: 'color', kind: 'surface', label: 'Card background', group: 'surface', aliases: ['card background', 'fondo de tarjeta'] },
+          { key: '--meridian-text', type: 'color', kind: 'onSurface', label: 'Text', group: 'text', aliases: ['text', 'foreground', 'texto', 'letra'] },
+          { key: '--meridian-text-muted', type: 'color', kind: 'onSurface', label: 'Muted text', group: 'text', aliases: ['muted text', 'texto tenue'] },
+          { key: '--meridian-primary', type: 'color', kind: 'accent', label: 'Primary color', group: 'primary', aliases: ['primary', 'brand', 'accent', 'main color', 'color principal', 'marca', 'acento', 'color de marca', 'primario'] },
+          { key: '--meridian-border', type: 'color', kind: 'border', label: 'Border', group: 'border', aliases: ['border', 'divider', 'borde', 'línea'] },
         ],
         classes: [
           { key: 'policy-card', label: 'Policy summary card', aliases: ['policy card', 'summary'], props: ['bg', 'color'] },
